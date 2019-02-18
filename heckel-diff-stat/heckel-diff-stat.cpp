@@ -72,11 +72,11 @@ main(int argc, char *argv[])
 
 	const char *name_a = argv[1];
 	const char *path_a = argv[2];
-	const char *hash_a = argv[3];
-	const char *mode_a = argv[4];
+	const std::string hash_a(argv[3]);
+	const std::string mode_a(argv[4]);
 	const char *path_b = argv[5];
-	const char *hash_b = argv[6];
-	const char *mode_b = argv[7];
+	const std::string hash_b(argv[6]);
+	const std::string mode_b(argv[7]);
 	const char *name_b = argv[8];
 
 	std::vector<std::string> o(read_file(path_a));
@@ -96,8 +96,16 @@ main(int argc, char *argv[])
 			// Rename
 			std::cout << program_name << " a/" << prefix <<
 				name_a << " b/" << prefix << name_b << '\n';
-		std::cout << "index " << hash_a << ".." << hash_b << ' ' <<
-			mode_a << ' ' << mode_b << '\n';
+		if (mode_a != mode_b) {
+			std::cout << "old mode " << mode_a << '\n';
+			std::cout << "new mode " << mode_b << '\n';
+		}
+		std::cout << "index " << hash_a.substr(0, 7) << ".."
+			<< hash_b.substr(0, 7);
+		if (mode_a == mode_b)
+			std::cout << ' ' << mode_a;
+		std::cout << '\n';
+
 		for (int i = 9; i < argc; i++)
 			std::cout << argv[i] << '\n';
 		auto moved = diff[HeckelDiff::MOVED];
