@@ -65,11 +65,6 @@ main(int argc, char *argv[])
 			std::cerr << argv[i] << "\n";
 		return 1;
 	}
-
-	const char *prefix = getenv("GIT_PREFIX");
-	if (prefix == NULL)
-		prefix = "";
-
 	const char *name_a = argv[1];
 	const char *path_a = argv[2];
 	const std::string hash_a(argv[3]);
@@ -90,12 +85,12 @@ main(int argc, char *argv[])
 	auto deleted = diff[HeckelDiff::DELETED];
 	if (output_lines) {
 		if (argc == 8)
-			std::cout << program_name << " a/" << prefix <<
-				name_a << " b/" << prefix << name_a << '\n';
+			std::cout << program_name << " a/" << name_a <<
+				" b/" << name_a << '\n';
 		else
 			// Rename
-			std::cout << program_name << " a/" << prefix <<
-				name_a << " b/" << prefix << name_b << '\n';
+			std::cout << program_name << " a/" << name_a <<
+				" b/" << name_b << '\n';
 		if (mode_a != mode_b) {
 			std::cout << "old mode " << mode_a << '\n';
 			std::cout << "new mode " << mode_b << '\n';
@@ -116,9 +111,10 @@ main(int argc, char *argv[])
 		output_prefixed_lines(' ', unchanged);
 	} else {
 		std::cout << inserted.size() << '\t' <<
-			deleted.size() << '\t' << prefix << name_a;
+			deleted.size() << '\t' <<
+			name_a;
 		if (name_b)
-			std::cout << " => " << prefix << name_b;
+			std::cout << " => " << name_b;
 		std::cout << '\n';
 	}
 
