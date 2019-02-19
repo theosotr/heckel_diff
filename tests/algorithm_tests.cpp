@@ -187,6 +187,31 @@ TEST(HeckelDiff, BlockMove) {
     delete expected_moved;
 }
 
+TEST(HeckelDiff, SameEnd) {
+
+    std::vector<std::string> original{"1" , "4" , "5" , "8" , "9"};
+    std::vector<std::string> updated{"1" , "4" , "5" , "6" , "7" , "8" , "9"};
+
+    auto expected_inserted = new std::vector<std::string>{"6", "7"};
+
+    testExpectations<std::string>(original, updated, expected_inserted, nullptr, nullptr, nullptr);
+
+    delete expected_inserted;
+}
+
+TEST(HeckelDiff, SameEndWithChange) {
+
+    std::vector<std::string> original{"1" , "2a" , "3a" , "4" , "5" , "8" , "9"};
+    std::vector<std::string> updated{"1" , "2" , "3" , "4" , "5" , "6" , "7" , "8" , "9"};
+
+    auto expected_inserted = new std::vector<std::string>{"2", "3", "6", "7"};
+
+    testExpectations<std::string>(original, updated, expected_inserted, nullptr, nullptr, nullptr);
+
+    delete expected_inserted;
+}
+
+
 TEST(HeckelDiff, Benchmark) {
 
     std::vector<size_t> original{};
