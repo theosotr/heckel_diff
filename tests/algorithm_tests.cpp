@@ -3,6 +3,7 @@
  */
 
 #include <chrono>
+#include <algorithm>    // std::min
 #include "gtest/gtest.h"
 #include "heckel_diff.hpp"
 #include "helpers.hpp"
@@ -18,9 +19,12 @@ void checkExpectedType(const std::vector<T> *result, const std::vector<T> &actua
 
     EXPECT_EQ(expected.size(), actual.size());
 
-    for (size_t i = 0; i < actual.size(); ++i) {
-        EXPECT_EQ(expected[i], actual[i]);
-    }
+    for (size_t i = 0; i < std::min(expected.size(), actual.size()); ++i)
+        EXPECT_EQ(expected[i], actual[i]) << "Difference at index " << i;
+    for (size_t i = actual.size(); i < expected.size(); ++i)
+	EXPECT_TRUE(expected.size() == actual.size()) << "Additional expected at index " << i << " = " << expected[i];
+    for (size_t i = expected.size(); i < actual.size(); ++i)
+	EXPECT_TRUE(expected.size() == actual.size()) << "Additional actual at index " << i << " = " << actual[i];
 }
 
 /*
