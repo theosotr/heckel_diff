@@ -193,13 +193,13 @@ TEST(HeckelDiff, BlockMove) {
 
 TEST(HeckelDiff, SameEnd) {
 
-    std::vector<uint32_t> original{1, 4, 5, 8, 9};
-    std::vector<uint32_t> updated{1, 4, 5, 6, 7, 8, 9};
+    std::vector<uint32_t> original{1, 3};
+    std::vector<uint32_t> updated{1, 2, 3};
 
-    auto expected_inserted = new std::vector<uint32_t>{6, 7};
+    auto expected_inserted = new std::vector<uint32_t>{2};
     auto expected_deleted = new std::vector<uint32_t>{};
     auto expected_moved = new std::vector<uint32_t>{};
-    auto expected_unchanged = new std::vector<uint32_t>{1, 4, 5, 8, 9};
+    auto expected_unchanged = new std::vector<uint32_t>{1, 3};
 
     testExpectations<uint32_t>(original, updated, expected_inserted, expected_deleted, expected_moved, expected_unchanged);
 
