@@ -77,7 +77,7 @@ namespace HeckelDiff {
         std::function<void(Entry *&entry, const T &item)> l = [&oa, &i](Entry *&entry, const T &l_item) {
 
             entry->oc += 1;
-            entry->all_old_indexes. push(i);
+            entry->all_old_indexes.push(i);
 
             oa[i] = Record<T>(l_item, entry);
 
@@ -102,10 +102,6 @@ namespace HeckelDiff {
         size_t new_index = 0;
 
         for (const auto &record : na) {
-
-            if (new_index >= oa.size()) {
-                return;
-            }
 
             auto &entry = record.entry;
 
@@ -183,11 +179,10 @@ namespace HeckelDiff {
             return;
         }
 
-        for (const auto &record : na) {
+        for (i = 0; i < na.size() - 1; i++) {
 
-            find_unchanged_blocks(record, Ascending, i, na, oa);
+            find_unchanged_blocks(na[i], Ascending, i, na, oa);
 
-            i += 1;
         }
     }
 
@@ -199,7 +194,7 @@ namespace HeckelDiff {
             return;
         }
 
-        for (auto j = na.size()-1; j != 0; --j) {
+        for (auto j = na.size() - 1; j != 0; j--) {
 
             find_unchanged_blocks(na[j], Descending, j, na, oa);
         }
@@ -241,16 +236,27 @@ namespace HeckelDiff {
         std::vector<T> inserted, moved, unchanged;
 
         size_t i = 0;
+        size_t j = 0;
 
         for (const auto &record : na) {
 
             if (record.index() == NotFound) {
 
+                // The entry points to entry of the symbol table.
                 inserted.push_back(record.value);
 
             } else {
-
-                if (record == oa[i]) {
+                /*
+                 * We presume that the line is unchanged
+                 * if one of the following conditions are met:
+                 *
+                 * - The current record (NA[i]) is identical with
+                 *   with entry of OA which corresponds to the same
+                 *   consecutive position j (i.e., additions of NA precede j)
+                 *
+                 * - We have NA[i] = i.
+                 */
+                if (record == oa[j] || (i == record.index() && record == oa[record.index()])) {
 
                     unchanged.push_back(record.value);
 
@@ -258,8 +264,8 @@ namespace HeckelDiff {
 
                     moved.push_back(record.value);
                 }
+                j += 1;
             }
-
             i += 1;
         }
 
